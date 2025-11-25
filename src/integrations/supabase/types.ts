@@ -200,30 +200,39 @@ export type Database = {
       profiles: {
         Row: {
           age: number | null
+          category_rank: number | null
+          consistency_weeks: number | null
           created_at: string | null
           fitness_level: Database["public"]["Enums"]["fitness_level"] | null
           id: string
           name: string
           profile_picture_url: string | null
           total_workout_minutes: number | null
+          weekly_score: number | null
         }
         Insert: {
           age?: number | null
+          category_rank?: number | null
+          consistency_weeks?: number | null
           created_at?: string | null
           fitness_level?: Database["public"]["Enums"]["fitness_level"] | null
           id: string
           name: string
           profile_picture_url?: string | null
           total_workout_minutes?: number | null
+          weekly_score?: number | null
         }
         Update: {
           age?: number | null
+          category_rank?: number | null
+          consistency_weeks?: number | null
           created_at?: string | null
           fitness_level?: Database["public"]["Enums"]["fitness_level"] | null
           id?: string
           name?: string
           profile_picture_url?: string | null
           total_workout_minutes?: number | null
+          weekly_score?: number | null
         }
         Relationships: []
       }
@@ -286,6 +295,135 @@ export type Database = {
           },
         ]
       }
+      wearable_connections: {
+        Row: {
+          access_token: string | null
+          connected_at: string
+          expires_at: string | null
+          id: string
+          provider: string
+          refresh_token: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          connected_at?: string
+          expires_at?: string | null
+          id?: string
+          provider: string
+          refresh_token?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          connected_at?: string
+          expires_at?: string | null
+          id?: string
+          provider?: string
+          refresh_token?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wearable_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wearable_data: {
+        Row: {
+          active_minutes: number | null
+          calories: number | null
+          created_at: string
+          date: string
+          heart_rate: number | null
+          id: string
+          source: string
+          steps: number | null
+          user_id: string
+        }
+        Insert: {
+          active_minutes?: number | null
+          calories?: number | null
+          created_at?: string
+          date?: string
+          heart_rate?: number | null
+          id?: string
+          source: string
+          steps?: number | null
+          user_id: string
+        }
+        Update: {
+          active_minutes?: number | null
+          calories?: number | null
+          created_at?: string
+          date?: string
+          heart_rate?: number | null
+          id?: string
+          source?: string
+          steps?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wearable_data_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weekly_stats: {
+        Row: {
+          consistency_score: number | null
+          created_at: string
+          days_active: number | null
+          effort_score: number | null
+          final_score: number | null
+          id: string
+          total_active_minutes: number | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          consistency_score?: number | null
+          created_at?: string
+          days_active?: number | null
+          effort_score?: number | null
+          final_score?: number | null
+          id?: string
+          total_active_minutes?: number | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          consistency_score?: number | null
+          created_at?: string
+          days_active?: number | null
+          effort_score?: number | null
+          final_score?: number | null
+          id?: string
+          total_active_minutes?: number | null
+          user_id?: string
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workouts: {
         Row: {
           created_at: string | null
@@ -326,6 +464,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_weekly_scores: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -336,7 +475,7 @@ export type Database = {
     }
     Enums: {
       app_role: "user" | "mentor" | "admin"
-      fitness_level: "beginner" | "intermediate" | "advanced"
+      fitness_level: "beginner" | "intermediate" | "advanced" | "elite"
       question_topic:
         | "safety"
         | "relationships"
@@ -473,7 +612,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["user", "mentor", "admin"],
-      fitness_level: ["beginner", "intermediate", "advanced"],
+      fitness_level: ["beginner", "intermediate", "advanced", "elite"],
       question_topic: [
         "safety",
         "relationships",

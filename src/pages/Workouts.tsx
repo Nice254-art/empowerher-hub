@@ -76,6 +76,9 @@ export default function Workouts() {
       setWorkoutType("");
       fetchWorkouts(user.id);
       fetchLeaderboard();
+      
+      // Trigger weekly score calculation
+      supabase.functions.invoke("calculate-weekly-scores");
     } catch (error: any) {
       toast.error("Failed to log workout");
     } finally {
