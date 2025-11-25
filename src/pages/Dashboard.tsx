@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Dumbbell, Heart, MessageCircle, Users, TrendingUp, Award } from "lucide-react";
+import { Dumbbell, Heart, MessageCircle, Users, TrendingUp, Award, Trophy } from "lucide-react";
 import heroImage from "@/assets/hero-wellness.jpg";
+import { WearableConnect } from "@/components/WearableConnect";
+import { WeeklyActivityChart } from "@/components/WeeklyActivityChart";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
@@ -75,7 +77,7 @@ export default function Dashboard() {
 
   const quickActions = [
     { icon: Dumbbell, label: "Log Workout", path: "/workouts", color: "text-primary" },
-    { icon: Heart, label: "Report Support Case", path: "/support", color: "text-accent" },
+    { icon: Trophy, label: "View Leaderboard", path: "/leaderboard", color: "text-accent" },
     { icon: MessageCircle, label: "Ask Community", path: "/community", color: "text-secondary" },
     { icon: Users, label: "Find Mentor", path: "/mentors", color: "text-primary" },
   ];
@@ -110,7 +112,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           <Card className="shadow-soft">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -127,8 +129,34 @@ export default function Dashboard() {
           <Card className="shadow-soft">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Total Minutes</CardTitle>
+                <CardTitle className="text-lg">Weekly Score</CardTitle>
                 <TrendingUp className="h-5 w-5 text-accent" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">{((profile?.weekly_score || 0) * 100).toFixed(0)}%</p>
+              <CardDescription className="mt-2">This week's performance</CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-soft">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Category Rank</CardTitle>
+                <Trophy className="h-5 w-5 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">#{profile?.category_rank || "-"}</p>
+              <CardDescription className="mt-2">In {profile?.fitness_level}</CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-soft">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Total Minutes</CardTitle>
+                <Dumbbell className="h-5 w-5 text-secondary" />
               </div>
             </CardHeader>
             <CardContent>
@@ -136,20 +164,13 @@ export default function Dashboard() {
               <CardDescription className="mt-2">Minutes exercised</CardDescription>
             </CardContent>
           </Card>
-
-          <Card className="shadow-soft">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Community</CardTitle>
-                <Users className="h-5 w-5 text-secondary" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">Active</p>
-              <CardDescription className="mt-2">Join discussions</CardDescription>
-            </CardContent>
-          </Card>
         </div>
+
+        {/* Weekly Activity Chart */}
+        {user && <WeeklyActivityChart userId={user.id} />}
+
+        {/* Wearable Connect */}
+        <WearableConnect />
 
         {/* Quick Actions */}
         <Card className="shadow-soft">

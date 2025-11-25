@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Dumbbell, Heart, MessageCircle, Users, Calendar, BookOpen, User, Menu } from "lucide-react";
+import { Home, Dumbbell, Heart, MessageCircle, Users, Calendar, BookOpen, User, Menu, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Dumbbell, label: "Workouts", path: "/workouts" },
+  { icon: Trophy, label: "Leaderboard", path: "/leaderboard" },
   { icon: Heart, label: "Support", path: "/support" },
   { icon: MessageCircle, label: "Community", path: "/community" },
   { icon: Users, label: "Mentors", path: "/mentors" },
